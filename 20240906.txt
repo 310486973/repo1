@@ -1,0 +1,15 @@
+metricbeat-6.8			cpu内存监控数据
+psg-alarm_threat_log	威胁告警
+psg-block_log			黑名单阻断
+psg-external_block_api	系统调用阻断日志
+psg-flow_ids			ids 流量
+psg-flow_log			流量数据
+psg-flow_sum			流量统计数据
+psg-http_log			http 流量
+psg-ids_block			ids 阻断
+threat_alarm_repress_raw_log	告警日志
+threat_block_repress_log		阻断日志
+psg-ip_log						p流
+psg-tig_alarm_threat_log		威胁情报告警日志
+psg-tig_block_log				威胁情报阻断日志
+
