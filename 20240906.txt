@@ -1,6 +1,6 @@
 
 git add .
-git commit -e "修改备注"
+git commit -m "修改备注"
 git push --推送到仓库
 
 
