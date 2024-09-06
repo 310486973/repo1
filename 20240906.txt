@@ -1,3 +1,9 @@
+
+git add .
+git commit -e "修改备注"
+git push --推送到仓库
+
+
 metricbeat-6.8			cpu内存监控数据
 psg-alarm_threat_log	威胁告警
 psg-block_log			黑名单阻断
