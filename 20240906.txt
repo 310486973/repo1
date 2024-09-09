@@ -35,3 +35,12 @@ c
 /home/oicq/argus/RecvServer/script/dpdk_env.sh psg_ccb
 
 以上
+
+date -s "2024-08-29 15:30:00"
+
+
+
+
+
+
+
