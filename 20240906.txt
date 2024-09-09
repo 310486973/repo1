@@ -30,6 +30,7 @@ python /home/oicq/argus/RecvServer/tools/dpdk_nic_bind.py -b ixgbe 0000:3c:00.0
 python /home/oicq/argus/RecvServer/tools/dpdk_nic_bind.py -b ixgbe 0000:3c:00.1
 tcpdump -i eth2
 tcpdump -i eth3
+c
 3.客户担心有漏流量，就进行回绑操作，进行回绑操作后，103探针系统进入假死状态
 /home/oicq/argus/RecvServer/script/dpdk_env.sh psg_ccb
 
