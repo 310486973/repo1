@@ -1,0 +1,714 @@
+
+
+容器：
+	Linux：
+		名称空间：Mount，PID，Network，UTS，User，IPC，...
+
+		system call
+	
+	LXC：LinuX Containers
+	
+	Docker：
+		C/S
+			Docker Daemon: 支持容器对象（container, image, network, volume）管理
+				http协议: Unix Socket, /var/run/docker/docker.sock
+				API
+					操作：GET, POST, ...
+			Docker CLI
+	
+		Image: 分层构建，只读
+			特殊文件系统：aufs, overlayfs, ...
+			每个容器有自己专用的读写Layer
+				生命周期同其所属的Container
+	
+				Volume：
+					独立于宿主机生命周期的共享式存储服务
+	
+		Image Registry：DockerHub，gcr.io, qary.io
+			Harbor
+	
+		容器间通信：
+			网络模型：
+				bridge: 桥接口，二层虚拟网桥
+					Container <--> Container
+						C/S
+							Server: DNAT
+							Client: SNAT
+				container：共享Network/UTS Namespace
+				host: 共享宿主机
+				none：不添加网络接口
+	
+			Wordpress:
+				nginx, php-fpm, mysql
+	
+			Overlay Network: 隧道
+				IPIP:
+					IPIP
+						MTU: 1500
+					VXLAN
+					GRE
+			Underlay Network:
+				IPVLAN
+				MACVLAN
+	
+			某个特定应用为例：
+				多个实例
+	
+		容器编排：
+			docker-compose
+			kubernetes
+				Borg
+				golang, clone
+			Mesos Marathon
+
+API Server
+	存储中心：etcd， kv
+	API：
+		RESTful
+		数据单元：抽象为对象
+			CRUD
+
+		资源：对象的类型
+			josn: {key1:value1, key2: value2, ...}
+				Pod类型
+				Service类型
+
+
+			对属性赋值，生成实例（对象），object
+	
+	常规操作：
+		对资源对象CRUD
+		执行过程由对应API类型的Controller负责执行，用户只需要指明终态
+	
+	通过编程调用API的功能
+		声明式编程，声明式API
+	
+		声明：向API Server提交数据对象，是静态的概念； 由用户完成； 
+	
+		实现：由控制器从API Server读取用户的声明，并把声明中对应的实际的实现创建出来
+	
+		控制器的作用：将声明对应为具体的实现，还要确保能始终实现
+			Loop
+			reconcilation loop，调谐循环
+	
+		每个对象都有两个状态，Controller负责确保实际状态 与 期望状态 一致：
+			期望的状态：spec
+			实际的状态：status
+
+
+	编排和运行应用：
+		应用的运行实体：Pod
+			应该由某个应用编排的控制器资源负责编排运行应用
+				Deployment：编排运行无状态应用
+				StatefulSet：有状态应用
+				DaemonSet：系统级应用
+		负责为某个特定应用的实例接入和分发流量的组件：Service
+
+
+​			
+Kubernetes：
+​	Master:
+​		kube-apiserver, etcd, kube-scheduler, kube-controllger-manager
+​	Worker:
+​		kubelet, kube-proxy
+
+		kubelet通过扩展接口对接容器具体功能的实现：CRI、CSI、CNI
+	
+	Addons：附件
+		CoreDNS
+		Dashboard
+		……
+	
+	ipvs：
+		netfilter：一组规则
+		基于内核实现报文分发
+
+
+Kubernetes v1.24
+
+	弃用docker-shim
+	换用cri-dockerd
+
+初始化第一个主节点：
+
+kubeadm init --control-plane-endpoint kubeapi.magedu.com --kubernetes-version=v1.24.3 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.96.0.0/12 --token-ttl=0 --cri-socket unix:///run/cri-dockerd.sock
+
+
+Calico: 192.168.0.0/16
+
+
+
+示例：
+	demoapp
+
+	Deployment Controller
+	Service
+
+
+
+部署Kubernetes集群：
+
+回顾和进阶：
+	Kubernetes：云原生OS，云OS，分布式操作系统
+		运行多台主机之上
+	编排运行应用的最小单元：Pod
+		容器集：一到多个具有“超亲密”关系的容器的集合
+		共享：
+			名称空间：Network, UTS, IPC
+			Volume：
+		底层基础设施：pause容器
+		动态性：
+	资源池：
+		计算资源：CPU，Memory
+		存储资源：Volume
+		网络资源：
+			Pod --> Pod：东西向流量 
+			集群外的进程 --> Pod：南北向流量
+
+			Service：
+				固定入口
+				服务发现：label selector
+				负载均衡：ipvs/iptables
+	
+				Service名称：
+					svc_name.NAMESPACE.svc.domain.ltd
+						A, AAAA： fqdn --> ip 
+						PTR：ip --> fqdn 
+						SVC：port 
+	
+				ClusterDNS: CoreDNS 
+					为Service自动维护的动态DNS
+	
+	lnmp:（预设前提：系统拓扑不会经常变动）
+		MySQL 
+		PHP-FPM(业务)
+		Nginx 
+	
+	核心工作逻辑：
+		声明式API：终态声明，期望状态（Spectification，简称为spec）
+		控制器：Controller， reconcilation loop，调谐循环
+			实际状态：Status 
+				diff: Status --> Spec 
+	
+		应用编排控制器：
+			无状态应用：Deployment
+				podTemplate：Pod模板
+					核心：
+						要运行容器的列表
+						标签
+				replicas：副本数，实例数
+				label selector：标签选择器
+			系统级应用：DaemonSet
+			有状态应用：StatefulSet
+			作业：
+				一次性作业：Job
+				周期性作业：CronJob
+
+
+	编排运行一个应用的核心过程：
+		1、应用编排控制器资源对象
+		2、提供固定的访问入口，及负载均衡
+		3、提供应用配置
+	
+		Nginx Service --> Nginx Pod (Controller) --> Volume (ConfigMap、Secret) --> PHP-FPM(业务) Service --> PHP-FPM(业务) Pod (Controller) --> Volume (ConfigMap、Secret) --> MySQL Service --> MySQL Pod (Controller)
+	
+	管理应用的逻辑：
+		基于资源的API编写资源配置文件，定义该资源类型下的对象
+		提交给 API Server
+	
+	Kubernetes系统组件：
+		分布式：运行于多个主机
+		这多个主机分两类：
+			Master：决策和控制中心
+				kube-apiserver：API网关，无状态 
+				etcd：状态存储
+				kube-controller-manager：控制器管理器
+				kube-scheduler：调度器，负责调度未完成绑定的Pod
+					调度：将Pod与某个Node建立了绑定关系
+			Worker：执行组件
+				kubelet：Pod生命周期管理
+					CRI: 对接外部的容器运行时，比如cri-dockerd和docker-ce、containerd、cri-o；
+					CNI：对接外部的虚拟（容器）网络，比如flannel（kubenet）、Calico、Cilium（eBPF）；
+						Underlay
+						Overlay
+					CSI：对接外部的共享存储服务，比如nfs-csi-driver（NFS）、Ceph、……
+				kube-proxy：Service功能在节点级的落地，具体来说，就是把Service的定义转换为节点上的iptables或ipvs规则
+	
+		Master高可用：
+			每个组件独立实现其自向的高可用机制
+				etcd：分布式高一致性kv存储，raft协议
+					奇数个节点：3,5,7
+				apiserver：无状态，2+
+					应该为其提供负载均衡器
+					https协议，而且，客户端与apiserver需要直接建立tls会话，LB通常要做tcp级的负载均衡
+				controller-manager：选举出一个Primary节点，余下的为Secondary；
+					leader election
+				scheduler：选举出一个Primary节点，余下的为Secondary；
+	
+			部署方式：
+				etcd独立部署：5+节点 
+					etcd：3节点集群
+					master: 2+节点集群
+				etcd与Master的各组件部署在一起：堆叠式，3节点
+					每个节点都部分etcd，master组件
+
+
+	etcd及其硬件推荐：
+	
+		https://etcd.io/docs/v3.5/op-guide/hardware/			
+
+
+	单Master集群：
+		Master： 
+		Worker：
+			CRI: cri-dockerd, docker-ce 
+			CNI：flannel 
+	
+		kubectl： $HOME/.kube/config 
+	
+	集群的三个网络：
+		1、节点网络：管理员
+			节点来源：
+				自主服务器：自管理网络
+				IaaS云：云托管，由云负责管理
+		2、Service网络：Kubernetes
+			10.96.0.0/12
+				可用Service IP： 2^20-2
+		3、Pod网络：CNI网络插件
+			不同的网络插件有不同的默认配置
+				Calico: 192.168.0.0/16
+					再次划分为多子网，每个节点使用一个子网，默认使用26位掩码
+						子网数量：2^10
+						每个子网内的IP量：2^6-2
+				Flannel：10.244.0.0/16
+					再次划分为多子网，每个节点使用一个子网，默认使用24位掩码
+	
+		示例环境：172.29.0.0/16
+			172.29.6.1      k8s-master01.magedu.com k8s-master01 kubeapi.magedu.com k8sapi.magedu.com kubeapi
+			172.29.6.2      k8s-master02.magedu.com k8s-master02
+			172.29.6.3      k8s-master03.magedu.com k8s-master03
+			172.29.6.11     k8s-node01.magedu.com k8s-node01
+			172.29.6.12     k8s-node02.magedu.com k8s-node02
+			172.29.6.13     k8s-node03.magedu.com k8s-node03
+	
+	kubeadm初始化集群的步骤：
+		kubeadm init：拉起来第一个Master节点
+			支持两初始化配置：
+				（1）命令行选项
+				（2）init配置文件
+	
+			命令：
+				~# kubeadm config images list --image-repository=registry.aliyuncs.com/google_containers
+				~# kubeadm config images pull --image-repository=registry.aliyuncs.com/google_containers --cri-socket unix:///run/cri-dockerd.sock
+	
+				~# kubeadm init --control-plane-endpoint="kubeapi.magedu.com" --kubernetes-version=v1.24.3 --pod-network-cidr=10.244.0.0/16 --service-cidr=10.96.0.0/12 --token-ttl=0 --cri-socket unix:///run/cri-dockerd.sock --upload-certs --image-repository=registry.aliyuncs.com/google_containers
+		kubeadm join：后续其它节点，均要通过该命令加入
+
+
+	重置集群：
+		先工作节点，后主节点：
+			~# kubeadm reset --cri-socket unix:///run/cri-dockerd.sock
+			~# rm -rf /etc/kubernetes/ /var/lib/kubelet /var/lib/dockershim /var/run/kubernetes /var/lib/cni /etc/cni/net.d
+	
+	Bootstrap：发生集群初始化
+		首次认证：Bootstrap token 
+		随后认证：都基于由Kubernetes CA签发的证书
+			鉴权：主体，是基于客户端证书的Subject（CN,O,City,State,C）
+	
+		kubectl：需要提供认证凭据
+			$HOME/.kube/config 
+				kubeconfig
+	
+		API Server为kubelet签发的证书的有效期只有一年； 
+			注意：在证书到期之前进行续签； 
+
+如何基于k8s编排运行应用：
+	k8s --> kubernetes	
+
+	以应用为中心的平台：
+		应用表现形式：Pod
+	
+	编排运行一个应用的核心过程：
+		（1）挑选一个合适应用编排控制器；
+		（2）对一个服务端应用，通常应该一个Service，甚至基于Ingress资源提供7层http协议的反代及负载均衡
+		（3）对于需要存储数据的应用，还应该为其提供持久化存储数据的Volume
+		（4）对于提供独特配置信息的应用，还应该为其提供ConfigMap和Secret
+	
+		学习k8s应用的核心
+	
+	API Server提供的是一个编程接口，声明式API
+		使用Kubernetes的前提是写代码：遵循资源API规范的配置文件
+			manifests
+	
+		大多数资源类型，其API的格式近似，遵循同一个格式
+			五个一级字段：
+				apiVersion
+				kind 
+				metadata
+				spec 
+				status 
+	
+			API，为了便于管理，根据其所属的功能类别，API资源被分成了多个小组
+				每个组只包含一部分资源类型，这样组称为APIGroup，每个group独立进行版本标识
+	
+					~# kubectl api-versions
+					GROUP_NAME/VERSION
+						VERSION：可能会多版本并存
+							v1:
+								alpha：内测
+								beta: 公测，存在变动的可能
+								stable：稳定
+	
+					admissionregistration.k8s.io/v1
+					apiextensions.k8s.io/v1
+					apiregistration.k8s.io/v1
+					apps/v1
+					authentication.k8s.io/v1
+					authorization.k8s.io/v1
+					autoscaling/v1
+					autoscaling/v2
+					autoscaling/v2beta1
+					autoscaling/v2beta2
+					batch/v1
+					batch/v1beta1
+					certificates.k8s.io/v1
+					coordination.k8s.io/v1
+					discovery.k8s.io/v1
+					discovery.k8s.io/v1beta1
+					events.k8s.io/v1
+					events.k8s.io/v1beta1
+					flowcontrol.apiserver.k8s.io/v1beta1
+					flowcontrol.apiserver.k8s.io/v1beta2
+					networking.k8s.io/v1
+					node.k8s.io/v1
+					node.k8s.io/v1beta1
+					policy/v1
+					policy/v1beta1
+					rbac.authorization.k8s.io/v1
+					scheduling.k8s.io/v1
+					storage.k8s.io/v1
+					storage.k8s.io/v1beta1
+					v1 = core/v1 	
+	
+				~# kubectl api-resources --api-group=networking.k8s.io
+	
+			五个一级字段：
+				apiVersion：资源类型所属的群组及其版本号
+				kind：资源类型本身的名称，例如Pod，Service 
+				metadata：对象元数据
+				spec 
+				status 
+	
+				类型元数据：apiVersion、kind
+				对象元数据：metadata
+				期望的状态：spec 
+				实际状态：status，由k8s系统自动维护
+	
+		了解某资源类型API规范的命令：
+			kubectl explain KIND 
+	
+		kubectl的三种对象管理机制
+			指令式命令：在kubectl命令使用命令行选项完成对象管理
+				kubectl create deployment demoapp --image=ikubernetes/demoapp:v1.0 --replcas=3
+				kubectl get namespaces 
+				kubectl get pods --namespace=kube-system 
+			指令式对象配置：从配置文件读取要操作对象，及对象属性；直接指明操作
+				kubectl create -f pod-demo.yaml 
+					每个资源的定义基本都是遵循资源规范所定义出的资源对象
+						apiVersion、kind、metadata、spec
+	
+				指令式命令:
+					create 
+					delete 
+					edit 
+					replace 
+					get 
+	
+			声明式对象配置：从配置文件读取要操作对象，及对象属性；声明对象终态
+				声明式命令：apply，多用于修改类的目的
+					“应用”至集群上
+	
+				kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+	
+		资源对象的配置：
+			OAM：
+				开发人员：资源的基础配置等
+				应用运维：实例规模等
+				集群管理员：安全策略等
+	
+		Service的基础使用
+	
+			LB:
+				Service Port 与 Pod Port 进行一一对应
+					--tcp=port[:targetPort] 
+	
+					--tcp=svc_port[:pod_port]
+	
+	资源详情状态信息的查看命令：
+		kubectl describe RESOURCES NAME 
+			kubectl describe pods demoapp 
+			kubectl describe services demoapp 
+	
+	创建Service时，会自动创建与其同名的Endpoint资源
+
+作业：
+	1、部署高可用的kubernetes集群；
+	2、将nginx、mysql、wordpress编排运行上到Kubernetes
+		（1）为每个应用使用Deployment编排运行，只需要运行1个实例；
+		（2）为每个应用创建Service
+			nginx: NodePort
+			wordpress和mysql：ClusterIP
+		（3）直接修改配置文件，完成服务对接
+			kubectl exec 
+
+第三天：
+
+	API Server：
+		声明式API：终态声明，期望状态（Spectification，简称为spec）
+			REST资源：固定格式的对象类型定义
+				Pod <-- kubelet 
+				Deployment/StatefulSet/DaemonSet/Job/CronJob 
+					podTemplate 模板
+					replicas 副本
+					selector 标签
+				Service 
+		Controller: Controller Manager 
+	
+	以应用为中心的平台：原子单元Pod 
+		编排应用 
+		编排存储
+		编排网络	
+	
+	Pod：轻量的虚拟机
+		运行一到多个容器，它们基于puase容器共享
+			名称空间：Network、UTS、IPC
+			存储资源：Volume
+	
+		最核心的内容：定义容器
+	
+	标准的API资源规范：
+		资源存在两个生效级别：
+			集群：Namespace, Node, PV, ……
+			名称空间：Pod、Service、Deployment、ConfigMap，Secret，Ingress, ……
+	
+		五个一级字段：
+			apiVersion：资源类型所属的群组及其版本号
+				~# kubectl api-versions 
+				~# kubectl api-resources [--api-group=]
+				~# kubectl explain TYPE 某个资源类型有哪些字段
+			kind：资源类型本身的名称，例如Pod，Service
+			metadata：对象元数据
+				name: 对象名称，在其所属的名称空间中必须惟一
+				namespace：对象所属的名称空间
+					~# kubectl get namespaces 列出所有的名称空间
+						namespace自身也是API资源类型
+					~# kubectl create namespace NAME 创建名称空间
+						kube-system：k8s自身相关的应用的名称空间，是k8s系统级的名称空间
+						default：用户空间级别的资源默认使用的名称空间
+							kubernetes service：API Server在集群内向客户端提供服务的端点，访问入口 
+	
+					删除namespace，会级联删除其内部的所有资源对象
+				labels: 对象标签，字典类型的数据
+				  key: value 
+					key： [key_prefix/]key: value  ([key_prefix/]键前缀，一般是域名)
+							有些资源类型，系统会自行为其维护一至多个label
+	
+					查看：~# kubectl get TYPE [NAME] --show-labels 
+					添加：~# kubectl label TYPE NAME key1=value1 [key2=value2 ...]
+					移除：~# kubectl label TYPE NAME key1- [key2- ...] 
+	
+					标签过滤：
+						等值过滤：
+							=: key=value，表示存在key，而且其值为value
+							!=：key!=value，表示存在key，但其值不为value，或者不存在该key
+						集合过滤：
+							指定的键的值存在于列表中：
+								'key in (value1, value2, ...)'
+							指定的键的不存在指定的列表中，或不存在该键：
+								'key notin (value1, value2, ...)'
+							键的存在性判断：
+								存在指定的键：'key'
+								不存在指定的键：'!key'
+	
+				annotations：对象注解，元数据，不能被标签过滤器使用，通常用于为应用提供配置 
+					键值型数据
+	
+					管理命令：kubectl annotate 
+	
+			spec：用户期望的状态
+				查看：
+					kubectl explain TYPE.spec 
+	
+			status：{}
+				资源的实际状态，即是指由kubernetes维护后的状态 
+	
+		工作逻辑：
+			Controller 
+				reconcilation loop 
+					diff status spec 
+			
+			拼接多个资源类型，完成一个大功能
+	
+	Pod配置：
+		（1）环境变量：传递配置参数
+		（2）健康状态检测：
+			类型：startupProbe、livenessProbe、readinessProbe
+				livenessProbe：导致Pod重启（restartPolicy）
+				readinessProbe：导致相关Service判定其是否可用的后端端点
+		（3）资源需求和资源限制
+			requests: 资源下限，最低保障
+			limits: 资源上限，绝不允许超越的边界
+		（4）SecurityContext
+			定义容器运行的约束条件
+				改变进程的运行身份，默认以容器内的受限的root身份
+					CAP_CHOWN
+					……
+			容器可用的CAPABILITIES
+				CAP_NET_ADMIN
+				CAP_NET_BIND_SERVICE
+		（5）lifecycle hook
+			钩子：
+				postStart：启动后
+				preStop：结束前 
+	
+	Pod：容器集
+		单节点多容器模式：
+			Sidecar模式
+			Ambanssador模式
+			Adapter模式
+	
+			Init Container模式
+				各初始化容器串行运行，且每个容器运行结束要退出
+				所有初始化容器成功运行并退出后，main container才能运行
+	
+	emptyDir卷示例：
+	
+		apiVersion: v1
+		kind: Pod
+		metadata:
+		name: volumes-emptydir-demo
+		spec:
+		initContainers:
+		- name: config-file-downloader
+			image: ikubernetes/admin-box
+			imagePullPolicy: IfNotPresent
+			command: ['/bin/sh','-c','wget -O /data/envoy.yaml https://code.aliyun.com/MageEdu/kubernetes-start/raw/master/tutorials/handson/volume-basics-01/envoy.yaml']
+			volumeMounts:
+			- name: config-file-store
+			mountPath: /data
+		containers:
+		- name: envoy
+			image: envoyproxy/envoy-alpine:v1.14.1
+			command: ['/bin/sh','-c']
+			args: ['envoy -c /etc/envoy/envoy.yaml']
+			volumeMounts:
+			- name: config-file-store
+			mountPath: /etc/envoy
+			readOnly: true
+		- name: demoapp
+		  image: ikubernetes/demoapp:v1.0
+		  env:
+		  - name: HOST 
+		    value: '127.0.0.1'
+		  - name: PORT 
+		    value:8080
+		volumes:
+		- name: config-file-store
+			emptyDir:
+			medium: Memory
+			sizeLimit: 16Mi			
+	
+	hostPath卷示例：
+		# Created-By:"MageEdu <mage@magedu.com>"
+		apiVersion: v1
+		kind: Pod
+		metadata:
+			name: volumes-hostpath-demo
+			labels:
+				app: redis
+		spec:
+			containers:
+			- name: redis
+				image: redis:alpine
+				ports:
+				- containerPort: 6379
+				name: redisport
+				volumeMounts:
+				- mountPath: /data
+				name: redisdata
+			volumes:
+				- name: redisdata
+				hostPath:
+					path: /appdatas/redis/
+					type: DirectoryOrCreate      		
+					
+	PV和PVC:
+		PV: 某个存储服务（独立存储接口，可以是个块设备，也可以是个文件系统）的抽象，对应于一种k8s标准资源类型
+			配置参数，对接到某个后端存储服务上
+			通常由管理配置； 
+		PVC：PV的过滤器，指定一至多个过滤条件，从而从所可用的PV中请求绑定一个PV
+		POD： 
+			使用persistentVolumeClaim卷插件，请求对接至PVC上
+	
+			Pod （persistentVolumeClain plugin）--> PVC （同一名称空间中的） --> PV （集群级别的资源）
+	
+		PVC过滤PV 
+			（1）volumeMode：FileSystem, BlockDevice
+			（2）labelSecltor：过滤符合标签选择器条件的PV
+				PV：事实定义了标签
+			（3）storageClassName：pvc和pv可以属于某个sc，也不属于任何sc
+				pvc只能够在同一个storageClass中过滤pv
+					能建立绑定关系的pvc和pv一定满足如下条件：
+						二者隶属于同个sc；
+						二者都不属于任何sc；
+			（4）accessMode：
+				RWX、RWO、ROX
+	
+					RWO - ReadWriteOnce
+					ROX - ReadOnlyMany
+					RWX - ReadWriteMany
+					RWOP - ReadWriteOncePod
+	
+			（5）size：空间大小
+	
+	动态预置PV：
+
+作业：
+	1、测试使用emptyDir、hostPath和nfs卷插件；
+	2、部署nfs-csi-driver，通过StorageClass的定义，为pvc动态预置pv；
+	
+
+​	
+
+​			
+
+
+
+
+​	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	140.82.114.3 github.com
+
+可用的图形界面：
+	kubeboard
+
+
+
