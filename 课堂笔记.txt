@@ -39,7 +39,7 @@
 				none：不添加网络接口
 	
 			Wordpress:
-				nginx, php-fpm, mysql
+				nginx, php-fpm, mysql5.5
 	
 			Overlay Network: 隧道
 				IPIP:
