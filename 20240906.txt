@@ -37,9 +37,33 @@ c
 以上
 
 date -s "2024-08-29 15:30:00"
+漏洞库     需要更新漏洞库时可从dms或云迹物料库下载更新
 
-
-
+curl -XGET 'http://10.0.1.143:9200/_cat/indices?v' |grep psg-block_log
+curl -XGET 10.0.1.143:9200/psg-block_log-20240808/_search?pretty -H'Content-Type:application/json' -d'{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "range": {
+            "insert_time": {
+              "gt": 0
+            }
+          }
+        },
+        {
+          "term": {
+            "is_blocked": {
+              "value": 1
+            }
+          }
+        }
+      ]
+    }
+  },
+  "size": 1000,
+  "_source": ["req_src_ip"]
+}'
 
 
 
