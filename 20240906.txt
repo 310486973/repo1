@@ -4,40 +4,11 @@ git commit -m "修改备注"
 git push --推送到仓库
 
 
-metricbeat-6.8			cpu内存监控数据
-psg-alarm_threat_log	威胁告警
-psg-block_log			黑名单阻断
-psg-external_block_api	系统调用阻断日志
-psg-flow_ids			ids 流量
-psg-flow_log			流量数据
-psg-flow_sum			流量统计数据
-psg-http_log			http 流量
-psg-ids_block			ids 阻断
-threat_alarm_repress_raw_log	告警日志
-threat_block_repress_log		阻断日志
-psg-ip_log						p流
-psg-tig_alarm_threat_log		威胁情报告警日志
-psg-tig_block_log				威胁情报阻断日志
 
-1.因客户反馈，8.18日以后，流量超出翻倍问题，经现场说明，
-进行排查天幕103探针镜像流量，
-2.发现该台探针镜像口有两个，与实际规划有出入，
-解绑两个镜像口，进行tcpdump抓包查看是否有流量
-python /home/oicq/argus/RecvServer/tools/dpdk_nic_bind.py --status
-python /home/oicq/argus/RecvServer/tools/dpdk_nic_bind.py -u 0000:3c:00.0
-python /home/oicq/argus/RecvServer/tools/dpdk_nic_bind.py -u 0000:3c:00.1
-python /home/oicq/argus/RecvServer/tools/dpdk_nic_bind.py -b ixgbe 0000:3c:00.0
-python /home/oicq/argus/RecvServer/tools/dpdk_nic_bind.py -b ixgbe 0000:3c:00.1
-tcpdump -i eth2
-tcpdump -i eth3
-c
-3.客户担心有漏流量，就进行回绑操作，进行回绑操作后，103探针系统进入假死状态
-/home/oicq/argus/RecvServer/script/dpdk_env.sh psg_ccb
 
-以上
 
 date -s "2024-08-29 15:30:00"
-漏洞库     需要更新漏洞库时可从dms或云迹物料库下载更新
+
 
 curl -XGET 'http://10.0.1.143:9200/_cat/indices?v' |grep psg-block_log
 curl -XGET 10.0.1.143:9200/psg-block_log-20240808/_search?pretty -H'Content-Type:application/json' -d'{
@@ -230,6 +201,41 @@ CVBR：Constrained VariableBit Rate(有限码流)
 
 
 https://github.com/CharonChui/AndroidNote/blob/master/VideoDevelopment/视频封装格式/视频封装格式.md
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: calico-config
+  namespace: kube-system
+data:
+  # Typha is disabled.
+  typha_service_name: "none"
+  # Configure the backend to use.
+  calico_backend: "bird"
+
+
+2024100513-
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
