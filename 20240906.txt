@@ -200,7 +200,7 @@ CVBR：Constrained VariableBit Rate(有限码流)
 参考文章：
 
 
-https://github.com/CharonChui/AndroidNote/blob/master/VideoDevelopment/视频封装格式/视频封装格式.md
+https://github.com/CharonChui/AndroidNote/blob/master/VideoDevelopment/视频封装格式/视频封装格式
 
 kind: ConfigMap
 apiVersion: v1
