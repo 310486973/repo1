@@ -7,38 +7,6 @@ git push --推送到仓库
 
 
 
-date -s "2024-08-29 15:30:00"
-
-
-curl -XGET 'http://10.0.1.143:9200/_cat/indices?v' |grep psg-block_log
-curl -XGET 10.0.1.143:9200/psg-block_log-20240808/_search?pretty -H'Content-Type:application/json' -d'{
-  "query": {
-    "bool": {
-      "must": [
-        {
-          "range": {
-            "insert_time": {
-              "gt": 0
-            }
-          }
-        },
-        {
-          "term": {
-            "is_blocked": {
-              "value": 1
-            }
-          }
-        }
-      ]
-    }
-  },
-  "size": 1000,
-  "_source": ["req_src_ip"]
-}'
-
-
-
-
 关于视频你需要知道的基本概念：码率（Bitrate）、帧率（FPS）、分辨率和清晰度
 桃翁
 文章首发在个人博客
@@ -217,11 +185,9 @@ data:
 2024100513-
 apiVersion: v1
 
-供应商发邮件excel表-》系统查看核对信息与在线表格核对
 
 
 深圳市内
-
 发货 新杰
 寄回 新杰
 
@@ -235,10 +201,6 @@ apiVersion: v1
 嘉里物流--查货请找微信小程序：嘉里大通
 
 
-
-
-
-
 1、董事长，主席级别（3个级别-高级主席，主席，副主席），CEO需要向董事局汇报。
 2、总裁，会长President(4个级别-高级总裁，总裁，高级副总裁，副总裁)，向CEO汇报。
 3、总经理（2个级别-总经理，副总经理）。
@@ -248,7 +210,7 @@ apiVersion: v1
 7、组长，拉长Line Leader(2个级别，组长，副组长)。
 8、普通员工 Worker(可以封2-3个级别)。
 
-
+20241024
 
 
 
