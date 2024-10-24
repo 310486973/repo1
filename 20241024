@@ -1,0 +1,346 @@
+
+[H3C]dis cu
+#
+ version 7.1.070, Release 2612P06
+#
+ sysname H3C
+#
+ telnet server enable
+#
+ irf mac-address persistent timer
+ irf auto-update enable
+ undo irf link-delay
+ irf member 1 priority 1
+#
+ mirroring-group 1 local
+ mirroring-group 2 local
+#
+ lldp global enable
+#
+ system-working-mode standard
+ hardware-resource switch-mode 0
+ hardware-resource routing-mode ipv6-64
+ hardware-resource vxlan l2gw
+ fan prefer-direction slot 1 port-to-power
+ password-recovery enable
+#
+vlan 1
+#
+vlan 61 to 66
+#
+vlan 192
+#
+ stp mode rstp
+ stp global enable
+#
+interface NULL0
+#
+interface Vlan-interface1
+ dhcp client identifier ascii 84656958840e-VLAN0001
+#
+interface Vlan-interface61
+ ip address 10.3.61.1 255.255.255.0
+#
+interface Vlan-interface62
+ ip address 10.3.62.1 255.255.255.0
+#
+interface Vlan-interface63
+ ip address 10.3.63.1 255.255.255.0
+#
+interface Vlan-interface192
+#
+interface FortyGigE1/0/49
+ port link-mode bridge
+#
+interface FortyGigE1/0/50
+ port link-mode bridge
+#
+interface FortyGigE1/0/51
+ port link-mode bridge
+#
+interface FortyGigE1/0/52
+ port link-mode bridge
+#
+interface FortyGigE1/0/53
+ port link-mode bridge
+#
+interface FortyGigE1/0/54
+ port link-mode bridge
+#
+interface M-GigabitEthernet0/0/0
+ dhcp client identifier hex 0284656958840e
+#
+interface M-GigabitEthernet0/0/1
+ dhcp client identifier hex 0284656958840e
+#
+interface Ten-GigabitEthernet1/0/1
+ port link-mode bridge
+ port access vlan 192
+ mirroring-group 1 mirroring-port both
+ mirroring-group 2 mirroring-port both
+#
+interface Ten-GigabitEthernet1/0/2
+ port link-mode bridge
+ description 11guanli
+ port access vlan 61
+ mirroring-group 1 mirroring-port both
+ mirroring-group 2 mirroring-port both
+#
+interface Ten-GigabitEthernet1/0/3
+ port link-mode bridge
+ port access vlan 61
+ mirroring-group 1 mirroring-port both
+ mirroring-group 2 mirroring-port both
+#
+interface Ten-GigabitEthernet1/0/4
+ port link-mode bridge
+ port access vlan 61
+#
+interface Ten-GigabitEthernet1/0/5
+ port link-mode bridge
+ description tianmu-guanli
+ port access vlan 61
+ mirroring-group 1 mirroring-port both
+#
+interface Ten-GigabitEthernet1/0/6
+ port link-mode bridge
+ port access vlan 62
+#
+interface Ten-GigabitEthernet1/0/7
+ port link-mode bridge
+ description tianmu-jingxiang
+ port link-type trunk
+ port trunk permit vlan 1 61 to 63
+ mirroring-group 1 monitor-port
+#
+interface Ten-GigabitEthernet1/0/8
+ port link-mode bridge
+ description yujie-jingxiang
+ port link-type trunk
+ port trunk permit vlan 1
+ mirroring-group 2 monitor-port
+#
+interface Ten-GigabitEthernet1/0/9
+ port link-mode bridge
+ port access vlan 61
+#
+interface Ten-GigabitEthernet1/0/10
+ port link-mode bridge
+ description yujie-guanli
+ port access vlan 61
+#
+interface Ten-GigabitEthernet1/0/11
+ port link-mode bridge
+ description yujie-daiwai
+ port access vlan 61
+#
+interface Ten-GigabitEthernet1/0/12
+ port link-mode bridge
+ port access vlan 61
+#
+interface Ten-GigabitEthernet1/0/13
+ port link-mode bridge
+ port access vlan 61
+#
+interface Ten-GigabitEthernet1/0/14
+ port link-mode bridge
+ port access vlan 61
+#
+interface Ten-GigabitEthernet1/0/15
+ port link-mode bridge
+ port access vlan 62
+#
+interface Ten-GigabitEthernet1/0/16
+ port link-mode bridge
+ port access vlan 62
+#
+interface Ten-GigabitEthernet1/0/17
+ port link-mode bridge
+ description 11vlan61 62 63
+ port link-type trunk
+ port trunk permit vlan 1 61 to 63 192
+ mirroring-group 1 mirroring-port both
+#
+interface Ten-GigabitEthernet1/0/18
+ port link-mode bridge
+ port link-type trunk
+ port trunk permit vlan 1 63 192
+#
+interface Ten-GigabitEthernet1/0/19
+ port link-mode bridge
+ port access vlan 192
+#
+interface Ten-GigabitEthernet1/0/20
+ port link-mode bridge
+ port access vlan 192
+#
+interface Ten-GigabitEthernet1/0/21
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/22
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/23
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/24
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/25
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/26
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/27
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/28
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/29
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/30
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/31
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/32
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/33
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/34
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/35
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/36
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/37
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/38
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/39
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/40
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/41
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/42
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/43
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/44
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/45
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/46
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/47
+ port link-mode bridge
+#
+interface Ten-GigabitEthernet1/0/48
+ port link-mode bridge
+#
+ scheduler logfile size 16
+#
+line class aux
+ user-role network-admin
+#
+line class vty
+ user-role network-operator
+#
+line aux 0
+ authentication-mode password
+ user-role network-admin
+ set authentication password hash $h$6$mbkNCiMpAyU2Fs4r$F6CiyJwELnaWKIuiw8fcVYsrS1ZdLMVdUh7Z8Yv4knTYv2d6mB7p3wU78xx557XPMAtSHFfElNjNLDl57Ay7KA==
+#
+line vty 0 15
+ user-role network-admin
+ user-role network-operator
+ set authentication password hash $h$6$BuLvNfnud+MmNU7P$Ra4N9MDcxg/S+mL6NpE+JT893yl6H2e4HYW8Vt/qPvdmpIJHw9XvT5yU9e+7T4CQQ3ICh3TpVtpH1daUjdYlXQ==
+#
+line vty 16 63
+ user-role network-operator
+#
+ ip route-static 0.0.0.0 0 192.168.1.1
+#
+radius scheme system
+ user-name-format without-domain
+#
+domain system
+#
+ domain default enable system
+#
+role name level-0
+ description Predefined level-0 role
+#
+role name level-1
+ description Predefined level-1 role
+#
+role name level-2
+ description Predefined level-2 role
+#
+role name level-3
+ description Predefined level-3 role
+#
+role name level-4
+ description Predefined level-4 role
+#
+role name level-5
+ description Predefined level-5 role
+#
+role name level-6
+ description Predefined level-6 role
+#
+role name level-7
+ description Predefined level-7 role
+#
+role name level-8
+ description Predefined level-8 role
+#
+role name level-9
+ description Predefined level-9 role
+#
+role name level-10
+ description Predefined level-10 role
+#
+role name level-11
+ description Predefined level-11 role
+#
+role name level-12
+ description Predefined level-12 role
+#
+role name level-13
+ description Predefined level-13 role
+#
+role name level-14
+ description Predefined level-14 role
+#
+user-group system
+#
+local-user admin class manage
+ password hash $h$6$FH2MQcK0nVgXZwLt$zDy4VK4QNZLSlZQfgmp1yEzP2WljGl49XLXhpeAPVSr/CKrlftGPzmbDx/8SCZi2FyUvNvdU0guc8v2ugwj4Tw==
+ service-type telnet
+ authorization-attribute user-role network-admin
+ authorization-attribute user-role network-operator
+#
+return
+[H3C]
+
