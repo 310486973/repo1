@@ -2481,6 +2481,7 @@ jemalloc-bg-thread yes
 #
 # Set aof rewrite child process to cpu affinity 8,9,10,11:
 # aof_rewrite_cpulist 8-11
+# aof_rewrite_cpulist 8-11
 #
 # Set bgsave child process to cpu affinity 1,10,11
 # bgsave_cpulist 1,10-11
@@ -2490,6 +2491,7 @@ jemalloc-bg-thread yes
 # by setting the following config which takes a space delimited list of warnings
 # to suppress
 #
+# ignore-warnings ARM64-COW-BUG
 # ignore-warnings ARM64-COW-BUG
 
 
