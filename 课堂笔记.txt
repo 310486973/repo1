@@ -676,39 +676,13 @@ Calico: 192.168.0.0/16
 作业：
 	1、测试使用emptyDir、hostPath和nfs卷插件；
 	2、部署nfs-csi-driver，通过StorageClass的定义，为pvc动态预置pv；
-	
-
-​	
-
-​			
-
-
-
-
-​	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	140.82.114.3 github.com
 
 可用的图形界面：
 	kubeboard
+	accessMode：
 
 
 
