@@ -683,6 +683,6 @@ Calico: 192.168.0.0/16
 可用的图形界面：
 	kubeboard
 	accessMode：
-上汽通用御界装机2台
+
 
 
