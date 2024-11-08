@@ -23,7 +23,6 @@ MySQL 的主从复制通常涉及两种主要线程：主服务器的写线程�
 rdb和aof同步
 
 更新和半更新
-curl -XGET 'http://10.0.1.143:9200/_cat/indices?v' |grep psg-block_log | grep sort -r 日期排序
 
 
 
