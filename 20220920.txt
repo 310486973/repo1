@@ -29,6 +29,12 @@ rdb和aof同步
 
 嘉里大通物流2024年9月项目POC设备类搬运邮寄账单，申请付款350.00元，poc项目立项审批请看附件excel表
 本单涉及1个POC项目共发货3台设备
-
+curl -XGET 'http://localhost:9200/_cat/shards?v'
+ index          shard prirep state        docs  store ip          node 
+ _river         0     p      STARTED         2  8.1kb 192.168.1.3 One  
+ _river         0     r      UNASSIGNED                                
+ megacorp       4     p      STARTED         1  3.4kb 192.168.1.3 One  
+ megacorp       4     r      UNASSIGNED                                
+ megacorp       0     p      STARTED         2  6.1kb 192.168.1.3 One  
 
 
