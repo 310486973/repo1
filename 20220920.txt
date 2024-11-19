@@ -1,5 +1,3 @@
-
-
 redis
 
 type class查看数据类型
@@ -24,9 +22,11 @@ rdb和aof同步
 
 更新和半更新。
 
-20241112
 
 
 odown客观和sdown主观
+
+
+
 
 
