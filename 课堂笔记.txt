@@ -73,7 +73,6 @@ API Server
 				Pod类型
 				Service类型
 
-
 			对属性赋值，生成实例（对象），object
 	
 	常规操作：
