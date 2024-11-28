@@ -133,6 +133,7 @@ Kubernetes v1.24
 kubeadm init --control-plane-endpoint kubeapi.magedu.com --kubernetes-version=v1.24.3 --pod-network-cidr=192.168.0.0/16 --service-cidr=10.96.0.0/12 --token-ttl=0 --cri-socket unix:///run/cri-dockerd.sock
 
 
+
 Calico: 192.168.0.0/16
 
 
