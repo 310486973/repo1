@@ -25,4 +25,4 @@ rdb和aof同步
 
 redis中
 odown客观和sdown主观
-
+logstash
