@@ -33,4 +33,5 @@ logstash
 clickhouse-client --host isa1 --port 9003  -disa_log -upcmgrsec --password
 
 
+789023
 
