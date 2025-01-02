@@ -33,5 +33,4 @@ logstash
 clickhouse-client --host isa1 --port 9003  -disa_log -upcmgrsec --password
 
 
-789023
-
+kafka-console-consumer.sh --bootstrap-server <host>:<post> --topic <topic名称> --from-beginning --consumer property group.id=<组名称>
