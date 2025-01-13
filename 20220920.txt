@@ -29,8 +29,4 @@ logstash
 也可以只使用一台和ntp网络相通的设备同步时间（上面的定时任务），再在下面添加如下定时任务 */21 * * * * (current_time=$(date +"%Y-%m-%d %H:%M:%S") &&  ssh 10.138.103.12 "sudo date -s '$current_time'")
 （将本机时间同步给10.138.103.12）
 
-登录clickhouse
-clickhouse-client --host isa1 --port 9003  -disa_log -upcmgrsec --password
 
-
-kafka-console-consumer.sh --bootstrap-server <host>:<post> --topic <topic名称> --from-beginning --consumer property group.id=<组名称>
